@@ -1,22 +1,35 @@
-// This function will be called by Gemini
-function addRowToSheet(item, category, notes) {
-  // Check if the input is valid
-  if (!item) {
-    return 'Error: The "item" field is required.';
-  }
-
-  // Get the specific sheet by its name (e.g., "Groceries", "Tasks")
+/**
+ * Adds a row of content strategy data to the sheet.
+ * This function is designed to be called by an AI agent.
+ */
+function addRowToSheet(mainCategory, title, urlSlug, pageType, focusKeywords, secondaryKeywords, intent, llmQuestions, kd, searchVolume) {
+  
+  // IMPORTANT: Make sure the sheet name here matches the name of your tab in Google Sheets.
+  // If your tab is not named 'Sheet1', change it here.
   const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
-
-  // Get the current date for a timestamp
-  const timestamp = new Date();
-
-  // The data to be added as a new row
-  const rowData = [timestamp, item, category || 'N/A', notes || 'N/A'];
-
-  // Append the row to the sheet
+  
+  // If the sheet isn't found, stop and return an error.
+  if (!sheet) {
+    return "Error: Could not find a sheet named 'Sheet1'. Please check the tab name.";
+  }
+  
+  // This creates the array of data in the correct order for your columns.
+  const rowData = [
+    mainCategory || 'N/A',
+    title || 'N/A',
+    urlSlug || 'N/A',
+    pageType || 'N/A',
+    focusKeywords || 'N/A',
+    secondaryKeywords || 'N/A',
+    intent || 'N/A',
+    llmQuestions || 'N/A',
+    kd || 'N/A',
+    searchVolume || 'N/A'
+  ];
+  
+  // Append the new row to the sheet.
   sheet.appendRow(rowData);
-
-  // Return a success message
-  return `Successfully added '${item}' to the sheet.`;
+  
+  // Return a success message.
+  return `Success: The title '${title}' was added to the sheet.`;
 }
