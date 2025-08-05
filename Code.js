@@ -1,35 +1,48 @@
 /**
- * Adds a row of content strategy data to the sheet.
- * This function is designed to be called by an AI agent.
+ * @customfunction
+ * This function adds a new row of content marketing ideas to the active Google Sheet.
+ * It is designed to be called by an AI agent (like a Gemini Gem) with structured data.
  */
-function addRowToSheet(mainCategory, title, urlSlug, pageType, focusKeywords, secondaryKeywords, intent, llmQuestions, kd, searchVolume) {
-  
-  // IMPORTANT: Make sure the sheet name here matches the name of your tab in Google Sheets.
-  // If your tab is not named 'Sheet1', change it here.
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName('Sheet1');
-  
-  // If the sheet isn't found, stop and return an error.
-  if (!sheet) {
-    return "Error: Could not find a sheet named 'Sheet1'. Please check the tab name.";
+function addContentIdea(mainCategory, title, urlSlug, pageType, focusKeywords, secondaryKeywords, intent, llmQuestions, kd, searchVolume) {
+
+  // --- CONFIGURATION ---
+  // IMPORTANT: Change 'Sheet1' to the exact name of the tab in your spreadsheet where you want to add the data.
+  const sheetName = 'Sheet1'; 
+  // -------------------
+
+  try {
+    const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = spreadsheet.getSheetByName(sheetName);
+
+    // If the sheet isn't found, stop and return a helpful error.
+    if (!sheet) {
+      return `Error: A sheet tab named '${sheetName}' could not be found. Please check the sheetName in the script's CONFIGURATION section.`;
+    }
+
+    // This creates the array of data in the correct order for your columns.
+    // If a value is not provided by the AI, it will default to 'N/A'.
+    const rowData = [
+      mainCategory || 'N/A',
+      title || 'N/A',
+      urlSlug || 'N/A',
+      pageType || 'N/A',
+      focusKeywords || 'N/A',
+      secondaryKeywords || 'N/A',
+      intent || 'N/A',
+      llmQuestions || 'N/A',
+      kd || 'N/A',
+      searchVolume || 'N/A'
+    ];
+
+    // Append the new row to the sheet.
+    sheet.appendRow(rowData);
+
+    // Return a clear success message.
+    return `Success! The content idea '${title}' has been added to the '${sheetName}' sheet.`;
+
+  } catch (e) {
+    // If any other error occurs, log it for debugging and return an error message.
+    Logger.log(e);
+    return `An error occurred: ${e.message}`;
   }
-  
-  // This creates the array of data in the correct order for your columns.
-  const rowData = [
-    mainCategory || 'N/A',
-    title || 'N/A',
-    urlSlug || 'N/A',
-    pageType || 'N/A',
-    focusKeywords || 'N/A',
-    secondaryKeywords || 'N/A',
-    intent || 'N/A',
-    llmQuestions || 'N/A',
-    kd || 'N/A',
-    searchVolume || 'N/A'
-  ];
-  
-  // Append the new row to the sheet.
-  sheet.appendRow(rowData);
-  
-  // Return a success message.
-  return `Success: The title '${title}' was added to the sheet.`;
 }
